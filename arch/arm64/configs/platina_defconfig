@@ -2,7 +2,7 @@
 # Automatically generated file; DO NOT EDIT.
 # Linux/arm64 4.19.325 Kernel Configuration
 #
-CONFIG_CC_VERSION_TEXT="Android (13688100, +pgo, +bolt, +lto, +mlgo, based on r563880) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)"
+CONFIG_CC_VERSION_TEXT="Android (14054515, +pgo, +bolt, +lto, +mlgo, based on r563880c) clang version 21.0.0 (https://android.googlesource.com/toolchain/llvm-project 5e96669f06077099aa41290cdb4c5e6fa0f59349)"
 CONFIG_GCC_VERSION=0
 CONFIG_CC_IS_CLANG=y
 CONFIG_LD_IS_LLD=y
@@ -10,13 +10,6 @@ CONFIG_CLANG_VERSION=210000
 CONFIG_LLD_VERSION=210000
 CONFIG_CC_CAN_LINK=y
 CONFIG_CC_CAN_LINK_STATIC=y
-CONFIG_FAKE_UNAME_NONE=y
-# CONFIG_FAKE_UNAME_5_4 is not set
-# CONFIG_FAKE_UNAME_5_10 is not set
-# CONFIG_FAKE_UNAME_5_15 is not set
-# CONFIG_FAKE_UNAME_6_1 is not set
-# CONFIG_FAKE_UNAME_6_6 is not set
-# CONFIG_FAKE_UNAME_6_12 is not set
 CONFIG_CC_HAS_ASM_GOTO=y
 CONFIG_TOOLS_SUPPORT_RELR=y
 CONFIG_IRQ_WORK=y
@@ -182,6 +175,7 @@ CONFIG_CPUSETS_ASSIST=y
 # CONFIG_RELAY is not set
 CONFIG_BLK_DEV_INITRD=y
 CONFIG_INITRAMFS_SOURCE=""
+# CONFIG_INITRAMFS_FORCE is not set
 CONFIG_RD_GZIP=y
 # CONFIG_RD_BZIP2 is not set
 # CONFIG_RD_LZMA is not set
