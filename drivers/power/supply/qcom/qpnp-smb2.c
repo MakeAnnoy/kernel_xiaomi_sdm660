@@ -1409,14 +1409,8 @@ static int smb2_batt_get_prop(struct power_supply *psy,
 		break;
 	case POWER_SUPPLY_PROP_CHARGE_COUNTER:
 	case POWER_SUPPLY_PROP_CHARGE_FULL:
+#ifndef CONFIG_MACH_XIAOMI_PLATINA
 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-#ifdef CONFIG_MACH_XIAOMI_PLATINA
-		rc = smblib_get_prop_batt_charge_full(chg, val);
-		break;
-#endif
-#ifdef CONFIG_MACH_XIAOMI_CLOVER
-		rc = smblib_get_prop_batt_charge_full_design(chg, val);
-		break;
 #endif
 	case POWER_SUPPLY_PROP_CYCLE_COUNT:
 	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
@@ -1433,6 +1427,9 @@ static int smb2_batt_get_prop(struct power_supply *psy,
 		val->intval = chg->fcc_stepper_enable;
 		break;
 #ifdef CONFIG_MACH_XIAOMI_PLATINA
+	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+		rc = smblib_get_prop_batt_charge_full(chg, val);
+		break;
 	case POWER_SUPPLY_PROP_CHARGER_TYPE:
 		val->intval = chg->real_charger_type;
 		break;
