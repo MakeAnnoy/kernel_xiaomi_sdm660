@@ -1315,17 +1315,6 @@ static int smb2_batt_get_prop(struct power_supply *psy,
 		val->intval = !get_effective_result(chg->chg_disable_votable);
 		break;
 #endif
-	case POWER_SUPPLY_PROP_CHARGING_ENABLED:
-#ifdef CONFIG_MACH_XIAOMI_CLOVER
-		val->intval = get_effective_result(chg->usb_icl_votable);
-		if (val->intval < 0) /* no votes */
-			val->intval = 1;
-		else
-			val->intval = !!val->intval;
-#else
-		val->intval = !get_effective_result(chg->chg_disable_votable);
-#endif
-		break;
 	case POWER_SUPPLY_PROP_INPUT_SUSPEND:
 		rc = smblib_get_prop_input_suspend(chg, val);
 		break;
@@ -1477,13 +1466,6 @@ static int smb2_batt_set_prop(struct power_supply *psy,
 		vote(chg->chg_disable_votable, USER_VOTER, !!!val->intval, 0);
 		break;
 #endif
-	case POWER_SUPPLY_PROP_CHARGING_ENABLED:
-#ifdef CONFIG_MACH_XIAOMI_CLOVER
-		rc = vote(chg->usb_icl_votable,DEFAULT_VOTER, !val->intval, 0);
-#else
-		vote(chg->chg_disable_votable, USER_VOTER, !!!val->intval, 0);
-#endif
-		break;
 	case POWER_SUPPLY_PROP_INPUT_SUSPEND:
 		rc = smblib_set_prop_input_suspend(chg, val);
 		break;
