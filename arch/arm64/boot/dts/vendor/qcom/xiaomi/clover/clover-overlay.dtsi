@@ -19,13 +19,10 @@
 };
 / {
 	reserved-memory {
-		ramoops {
-			compatible = "removed-dma-pool", "ramoops";
+		pstore_reserve_mem: pstore_reserve_mem_region@0 {
+			compatible = "removed-dma-pool";
 			no-map;
 			reg = <0x0 0x9fe00000 0x0 0x00100000>;
-			console-size = <0x200000>;
-			pmsg-size = <0x200000>;
-			status = "ok";
 		};
 	};
 };
