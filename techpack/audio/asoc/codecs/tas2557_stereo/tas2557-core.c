@@ -19,12 +19,10 @@
 ** =============================================================================
 */
 
-#include <asm/segment.h>
 #include <linux/crc8.h>
 #include <linux/delay.h>
 #include <linux/fcntl.h>
 #include <linux/firmware.h>
-#include <linux/fs.h>
 #include <linux/gpio.h>
 #include <linux/i2c.h>
 #include <linux/init.h>
@@ -2639,30 +2637,24 @@ static int tas2557_load_calibration(struct tas2557_priv *pTAS2557,
 {
 	int nResult = 0;
 
-	struct file* nFile = NULL;
+	int nFile;
 	mm_segment_t fs;
 	unsigned char pBuffer[1000];
 	int nSize = 0;
-	loff_t pos = 0;
 
 	dev_dbg(pTAS2557->dev, "%s:\n", __func__);
 
 	fs = get_fs();
 	set_fs(KERNEL_DS);
-	nFile = filp_open(pFileName, O_RDONLY, 0);
+	nFile = sys_open(pFileName, O_RDONLY, 0);
 
-	dev_info(pTAS2557->dev, "TAS2557 calibration file = %s\n", pFileName);
+	dev_info(pTAS2557->dev, "TAS2557 calibration file = %s, handle = %d\n", pFileName, nFile);
 
-	if (IS_ERR(nFile)) {
-		if (PTR_ERR(nFile) == -ENOENT)
-			dev_err(pTAS2557->dev, "TAS2557 calibration file %s is not exit\n", pFileName);
-		else
-			dev_err(pTAS2557->dev, "TAS2557 cannot open calibration file: %s errno:%d\n", pFileName,
-					(int)PTR_ERR(nFile));
+	if (nFile >= 0) {
+		nSize = sys_read(nFile, pBuffer, 1000);
+		sys_close(nFile);
 	} else {
-		pos = nFile->f_pos;
-		nSize = vfs_read(nFile, pBuffer, 1000, &pos);
-		filp_close(nFile, NULL);
+		dev_err(pTAS2557->dev, "TAS2557 cannot open calibration file: %s\n", pFileName);
 	}
 
 	set_fs(fs);
