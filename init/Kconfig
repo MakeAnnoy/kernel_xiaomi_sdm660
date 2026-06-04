@@ -2377,5 +2377,12 @@ config ARCH_HAS_SYNC_CORE_BEFORE_USERMODE
 # <asm/syscall_wrapper.h>.
 config ARCH_HAS_SYSCALL_WRAPPER
 	def_bool n
+	
+config LIMITLESS
+	bool "Enable Limitless Addon"
+	default n
+	help
+	  This option enables ThRE Team's Limitless Addon
+	  for dynamic kernel parameters.
 
 source "init/Kconfig.gki"
