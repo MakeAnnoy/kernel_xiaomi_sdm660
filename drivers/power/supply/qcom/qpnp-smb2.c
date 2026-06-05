@@ -1247,10 +1247,7 @@ static int smb2_init_dc_psy(struct smb2 *chip)
  *************************/
 
 static enum power_supply_property smb2_batt_props[] = {
-#ifdef CONFIG_MACH_XIAOMI_PLATINA
-	POWER_SUPPLY_PROP_CHARGING_ENABLED,
-#endif
-    POWER_SUPPLY_PROP_INPUT_SUSPEND,
+	POWER_SUPPLY_PROP_INPUT_SUSPEND,
 	POWER_SUPPLY_PROP_STATUS,
 	POWER_SUPPLY_PROP_HEALTH,
 	POWER_SUPPLY_PROP_PRESENT,
@@ -1310,11 +1307,17 @@ static int smb2_batt_get_prop(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_PRESENT:
 		rc = smblib_get_prop_batt_present(chg, val);
 		break;
-#ifdef CONFIG_MACH_XIAOMI_PLATINA
 	case POWER_SUPPLY_PROP_CHARGING_ENABLED:
+#ifdef CONFIG_MACH_XIAOMI_CLOVER
+		val->intval = get_effective_result(chg->usb_icl_votable);
+		if (val->intval < 0) /* no votes */
+			val->intval = 1;
+		else
+			val->intval = !!val->intval;
+#else
 		val->intval = !get_effective_result(chg->chg_disable_votable);
-		break;
 #endif
+		break;
 	case POWER_SUPPLY_PROP_INPUT_SUSPEND:
 		rc = smblib_get_prop_input_suspend(chg, val);
 		break;
@@ -1409,8 +1412,14 @@ static int smb2_batt_get_prop(struct power_supply *psy,
 		break;
 	case POWER_SUPPLY_PROP_CHARGE_COUNTER:
 	case POWER_SUPPLY_PROP_CHARGE_FULL:
-#ifndef CONFIG_MACH_XIAOMI_PLATINA
 	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
+#ifdef CONFIG_MACH_XIAOMI_PLATINA
+		rc = smblib_get_prop_batt_charge_full(chg, val);
+		break;
+#endif
+#ifdef CONFIG_MACH_XIAOMI_CLOVER
+		rc = smblib_get_prop_batt_charge_full_design(chg, val);
+		break;
 #endif
 	case POWER_SUPPLY_PROP_CYCLE_COUNT:
 	case POWER_SUPPLY_PROP_VOLTAGE_NOW:
@@ -1427,9 +1436,6 @@ static int smb2_batt_get_prop(struct power_supply *psy,
 		val->intval = chg->fcc_stepper_enable;
 		break;
 #ifdef CONFIG_MACH_XIAOMI_PLATINA
-	case POWER_SUPPLY_PROP_CHARGE_FULL_DESIGN:
-		rc = smblib_get_prop_batt_charge_full(chg, val);
-		break;
 	case POWER_SUPPLY_PROP_CHARGER_TYPE:
 		val->intval = chg->real_charger_type;
 		break;
@@ -1458,11 +1464,13 @@ static int smb2_batt_set_prop(struct power_supply *psy,
 	case POWER_SUPPLY_PROP_STATUS:
 		rc = smblib_set_prop_batt_status(chg, val);
 		break;
-#ifdef CONFIG_MACH_XIAOMI_PLATINA
 	case POWER_SUPPLY_PROP_CHARGING_ENABLED:
+#ifdef CONFIG_MACH_XIAOMI_CLOVER
+		rc = vote(chg->usb_icl_votable,DEFAULT_VOTER, !val->intval, 0);
+#else
 		vote(chg->chg_disable_votable, USER_VOTER, !!!val->intval, 0);
-		break;
 #endif
+		break;
 	case POWER_SUPPLY_PROP_INPUT_SUSPEND:
 		rc = smblib_set_prop_input_suspend(chg, val);
 		break;
@@ -1551,9 +1559,7 @@ static int smb2_batt_prop_is_writeable(struct power_supply *psy,
 {
 	switch (psp) {
 	case POWER_SUPPLY_PROP_STATUS:
-#ifdef CONFIG_MACH_XIAOMI_PLATINA
 	case POWER_SUPPLY_PROP_CHARGING_ENABLED:
-#endif
 	case POWER_SUPPLY_PROP_INPUT_SUSPEND:
 	case POWER_SUPPLY_PROP_SYSTEM_TEMP_LEVEL:
 	case POWER_SUPPLY_PROP_CAPACITY:
