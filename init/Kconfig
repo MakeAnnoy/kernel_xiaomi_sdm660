@@ -2378,7 +2378,7 @@ config ARCH_HAS_SYSCALL_WRAPPER
 	
 config LIMITLESS
 	bool "Enable Limitless Addon"
-	default n
+	default y
 	help
 	  This option enables ThRE Team's Limitless Addon
 	  for dynamic kernel parameters.
