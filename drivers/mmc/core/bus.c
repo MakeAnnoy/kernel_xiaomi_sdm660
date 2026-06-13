@@ -201,7 +201,12 @@ skip_full_resume:
 static int mmc_runtime_suspend(struct device *dev)
 {
 	struct mmc_card *card = mmc_dev_to_card(dev);
-	struct mmc_host *host = card->host;
+	struct mmc_host *host;
+
+	if (!card)
+		return 0;
+
+	host = card->host;
 
 	if (mmc_bus_needs_resume(host))
 		return 0;
